@@ -1,5 +1,6 @@
 import streamlit as st
 from transformers import pipeline, MBartForConditionalGeneration, MBart50TokenizerFast
+from googletrans import Translator  # Library to help with Roman transliteration
 
 # Load the translation pipeline (using mBART for multilingual translation)
 @st.cache_resource
@@ -20,9 +21,18 @@ def preprocess_input(text):
     processed_words = [replacements.get(word, word) for word in words]
     return " ".join(processed_words)
 
+def romanize_urdu(text):
+    # Use Google Translator to transliterate Urdu script to Roman Urdu
+    translator = Translator()
+    try:
+        result = translator.translate(text, src='ur', dest='en')
+        return result.pronunciation if result.pronunciation else text
+    except Exception as e:
+        return f"Transliteration failed: {str(e)}"
+
 def main():
-    st.title("English to Urdu Translator")
-    st.write("Enter an English sentence and get its translation in Urdu!")
+    st.title("English to Roman Urdu Translator")
+    st.write("Enter an English sentence and get its translation in Roman Urdu!")
 
     # Load the model and tokenizer
     model, tokenizer = load_model()
@@ -50,8 +60,11 @@ def main():
 
                     # Decode the generated tokens
                     urdu_translation = tokenizer.decode(generated_tokens[0], skip_special_tokens=True)
+
+                    # Convert to Roman Urdu
+                    roman_urdu_translation = romanize_urdu(urdu_translation)
                     st.success("Translation:")
-                    st.write(urdu_translation)
+                    st.write(roman_urdu_translation)
                 except Exception as e:
                     st.error(f"Error: {str(e)}")
         else:
