@@ -1,35 +1,27 @@
 import streamlit as st
 from transformers import pipeline
 
-# Load the English to Roman Urdu translation model
-translator = pipeline("translation", model="google-t5/t5-base")
+def main():
+    st.title("English to Roman Urdu Converter")
+    st.write("Enter an English prompt, and get the Roman Urdu equivalent!")
 
-def translate_to_roman_urdu(text):
-    result = translator(text, max_length=128)[0]['translation_text']
-    return result
+    # Load the Hugging Face model (change the model name to your specific one)
+    @st.cache_resource
+    def load_model():
+        return pipeline("translation", model="google-t5/t5-base")
 
-# Streamlit app
-st.title("English to Roman Urdu Translator")
+    translator = load_model()
 
-# Input text box
-input_text = st.text_area("Enter English text:", "Hello, how are you?")
+    # User input prompt
+    input_text = st.text_input("Enter English text:")
 
-if st.button("Translate"):
-    if input_text:
-        # Perform translation
-        roman_urdu = translate_to_roman_urdu(input_text)
-        
-        # Display result
-        st.subheader("Roman Urdu Translation:")
-        st.write(roman_urdu)
-    else:
-        st.warning("Please enter some text to translate.")
+    if st.button("Convert"):
+        if input_text:
+            # Generate Roman Urdu output
+            output = translator(input_text)
+            st.success(f"Roman Urdu: {output[0]['translation_text']}")
+        else:
+            st.warning("Please enter some text.")
 
-# Instructions for running the app
-st.sidebar.header("How to run this app")
-st.sidebar.markdown("""
-1. Install required libraries: `pip install streamlit transformers torch`
-2. Replace `"your-model-name-here"` with the actual Hugging Face model name
-3. Save this script as `app.py`
-4. Run the app: `streamlit run app.py`
-""")
+if __name__ == "__main__":
+    main()
