@@ -4,10 +4,10 @@
 This is a prototype and may not work perfectly.
 
 ## Overview
-This project is a tool that converts Urdu text into Roman Urdu. It uses a combination of predefined mappings and character-level rules to ensure accurate transliteration of common phrases and individual words.
+This project is a prototype tool that converts English text to Urdu and then transliterates the Urdu text into Roman Urdu. It uses a combination of predefined mappings and character-level rules to ensure accurate conversion of common phrases and individual words.
 
 ## Features
-- Converts Urdu text to Roman Urdu.
+- Converts English text to Urdu and then to Roman Urdu.
 + Handles specific phrases for better translations.
 * Character-level fallback for words not in the predefined mapping.
 
@@ -18,11 +18,11 @@ This project is a tool that converts Urdu text into Roman Urdu. It uses a combin
 ## Usage 
 Run the tool via Streamlit
 
-Enter Urdu text to get the Roman Urdu transliteration.
+nter English text to get the Urdu translation and Roman Urdu transliteration.
 
 ## Example 
-- Input: "تم کہاں ہو" -> Output: "tum kahan ho"
-+ Input: "ضرورت ایجاد کی ماں ہے" -> Output: "zaroorat ijaad ki maa hai"
+- Input: "Where are you?" -> Urdu: "تم کہاں ہو" -> Roman Urdu: "tum kahan ho"
++ Input: "Necessity is the mother of invention" -> Urdu: "ضرورت ایجاد کی ماں ہے" -> Roman Urdu: "zaroorat ijaad ki maa hai"
 
 ## Contribution
 Feel free to open an issue or submit a pull request for improvements.
