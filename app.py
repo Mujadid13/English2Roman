@@ -7,7 +7,11 @@ def main():
 
     # Load the Hugging Face model
     if "translator" not in st.session_state:
-        st.session_state.translator = pipeline("translation", model="google/t5-v1_1-base")
+        try:
+            st.session_state.translator = pipeline("translation", model="Helsinki-NLP/opus-mt-en-ur")
+        except Exception as e:
+            st.error(f"Failed to load model: {e}")
+            return
 
     translator = st.session_state.translator
 
@@ -16,9 +20,12 @@ def main():
 
     if st.button("Convert"):
         if input_text:
-            # Generate Roman Urdu output
-            output = translator(input_text)
-            st.success(f"Roman Urdu: {output[0]['translation_text']}")
+            try:
+                # Generate Roman Urdu output
+                output = translator(input_text)
+                st.success(f"Roman Urdu: {output[0]['translation_text']}")
+            except Exception as e:
+                st.error(f"Error during conversion: {e}")
         else:
             st.warning("Please enter some text.")
 
