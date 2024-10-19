@@ -29,7 +29,7 @@ def main():
         if english_text:
             with st.spinner('Translating...'):
                 try:
-                    urdu_translation = translator(english_text, target_language='ur')[0]['translation_text']
+                    urdu_translation = translator(english_text)[0]['translation_text']
                     roman_urdu_translation = romanize_urdu(urdu_translation)
                     st.success("Translation:")
                     st.write(roman_urdu_translation)
