@@ -5,12 +5,11 @@ def main():
     st.title("English to Roman Urdu Converter")
     st.write("Enter an English prompt, and get the Roman Urdu equivalent!")
 
-    # Load the Hugging Face model (change the model name to your specific one)
-    @st.cache_resource
-    def load_model():
-        return pipeline("translation", model="google-t5/t5-base")
+    # Load the Hugging Face model
+    if "translator" not in st.session_state:
+        st.session_state.translator = pipeline("translation", model="google/t5-v1_1-base")
 
-    translator = load_model()
+    translator = st.session_state.translator
 
     # User input prompt
     input_text = st.text_input("Enter English text:")
