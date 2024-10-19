@@ -21,20 +21,21 @@ def preprocess_input(text):
     return " ".join(processed_words)
 
 def romanize_urdu(text):
-    # A basic dictionary for Urdu to Roman Urdu transliteration
+    # A more comprehensive dictionary for Urdu to Roman Urdu transliteration
     transliteration_map = {
         'ک': 'k', 'ہ': 'h', 'ر': 'r', 'ا': 'a', 'ل': 'l', 'م': 'm', 'ت': 't',
         'ی': 'i', 'ن': 'n', 'د': 'd', 'س': 's', 'و': 'w', 'چ': 'ch', 'پ': 'p',
         'ش': 'sh', 'ب': 'b', 'گ': 'g', 'ف': 'f', 'ج': 'j', 'ز': 'z', 'خ': 'kh',
         'غ': 'gh', 'ع': 'a', 'ص': 's', 'ض': 'z', 'ط': 't', 'ظ': 'z', 'ق': 'q',
         'ح': 'h', 'ث': 's', 'ذ': 'z', 'ژ': 'zh', 'ٹ': 't', 'ڈ': 'd', 'ڑ': 'r',
-        'ے': 'e', 'ں': 'n'
-        # Add more mappings for more accuracy
+        'ے': 'e', 'ں': 'n', 'ہو': 'ho', 'ہی': 'hai', 'کیا': 'kia', 'ہیں': 'hain',
+        # Add more mappings for common Urdu words/phrases
     }
 
-    # Replace each character with its Roman Urdu equivalent
-    romanized_text = ''.join([transliteration_map.get(char, char) for char in text])
-    return romanized_text
+    # Replace each character or word with its Roman Urdu equivalent
+    words = text.split()
+    romanized_words = [transliteration_map.get(word, ''.join([transliteration_map.get(char, char) for char in word])) for word in words]
+    return " ".join(romanized_words)
 
 def main():
     st.title("English to Roman Urdu Translator")
@@ -67,10 +68,14 @@ def main():
                     # Decode the generated tokens
                     urdu_translation = tokenizer.decode(generated_tokens[0], skip_special_tokens=True)
 
-                    # Convert to Roman Urdu
-                    roman_urdu_translation = romanize_urdu(urdu_translation)
-                    st.success("Translation:")
-                    st.write(roman_urdu_translation)
+                    # Check if translation is valid (not in English)
+                    if urdu_translation.strip().lower() == processed_text.lower():
+                        st.error("Translation to Urdu failed, check the model settings.")
+                    else:
+                        # Convert to Roman Urdu
+                        roman_urdu_translation = romanize_urdu(urdu_translation)
+                        st.success("Translation:")
+                        st.write(roman_urdu_translation)
                 except Exception as e:
                     st.error(f"Error: {str(e)}")
         else:
