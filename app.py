@@ -1,6 +1,5 @@
 import streamlit as st
 from transformers import pipeline, MBartForConditionalGeneration, MBart50TokenizerFast
-from urdu2roman import Urdu2Roman  # Importing urdu2roman library for transliteration
 
 # Load the translation pipeline (using mBART for multilingual translation)
 @st.cache_resource
@@ -22,9 +21,40 @@ def preprocess_input(text):
     return " ".join(processed_words)
 
 def romanize_urdu(text):
-    # Using urdu2roman to transliterate Urdu to Roman Urdu
-    u2r = Urdu2Roman()
-    return u2r.transliterate(text)
+    # Improved dictionary for Urdu to Roman Urdu transliteration, using word and character mapping
+    transliteration_map = {
+        'ضرورت': 'zaroorat',
+        'ایجاد': 'ijaad',
+        'ماں': 'maa',
+        'ہے': 'hai',
+        'کی': 'ki',
+        'پیدائش': 'paidaish',
+        # Add more mappings for specific words and phrases
+    }
+
+    # Improved character-level mapping for words not found in transliteration_map
+    char_map = {
+        'ک': 'k', 'ہ': 'h', 'ر': 'r', 'ا': 'a', 'ل': 'l', 'م': 'm', 'ت': 't',
+        'ی': 'i', 'ن': 'n', 'د': 'd', 'س': 's', 'و': 'w', 'چ': 'ch', 'پ': 'p',
+        'ش': 'sh', 'ب': 'b', 'گ': 'g', 'ف': 'f', 'ج': 'j', 'ز': 'z', 'خ': 'kh',
+        'غ': 'gh', 'ع': 'a', 'ص': 's', 'ض': 'z', 'ط': 't', 'ظ': 'z', 'ق': 'q',
+        'ح': 'h', 'ث': 's', 'ذ': 'z', 'ژ': 'zh', 'ٹ': 't', 'ڈ': 'd', 'ڑ': 'r',
+        'ے': 'e', 'ں': 'n'
+    }
+
+    words = text.split()
+    romanized_words = []
+
+    for word in words:
+        # Check if word is in transliteration map
+        if word in transliteration_map:
+            romanized_words.append(transliteration_map[word])
+        else:
+            # Fall back to character level transliteration
+            romanized_word = ''.join([char_map.get(char, char) for char in word])
+            romanized_words.append(romanized_word)
+
+    return " ".join(romanized_words)
 
 def main():
     st.title("English to Roman Urdu Translator")
@@ -57,7 +87,7 @@ def main():
                     # Decode the generated tokens
                     urdu_translation = tokenizer.decode(generated_tokens[0], skip_special_tokens=True)
 
-                    # Convert to Roman Urdu using urdu2roman
+                    # Convert to Roman Urdu
                     roman_urdu_translation = romanize_urdu(urdu_translation)
                     st.success("Translation:")
                     st.write(roman_urdu_translation)
