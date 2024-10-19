@@ -1,7 +1,6 @@
 import streamlit as st
 from transformers import MBartForConditionalGeneration, MBart50TokenizerFast
 import torch
-import googletrans
 from googletrans import Translator
 
 # Load the translation pipeline (using mBART for multilingual translation)
@@ -28,7 +27,7 @@ def preprocess_input(text):
 def translate_text_google(text, src_lang='en', tgt_lang='ur'):
     translator = Translator()
     translated = translator.translate(text, src=src_lang, dest=tgt_lang)
-    return translated.text
+    return translated.text if translated else ""
 
 def romanize_urdu(text):
     # Improved dictionary for Urdu to Roman Urdu transliteration, using word and character mapping
@@ -89,10 +88,13 @@ def main():
                     # Generate translation using Google Translate
                     urdu_translation = translate_text_google(processed_text)
 
-                    # Convert to Roman Urdu
-                    roman_urdu_translation = romanize_urdu(urdu_translation)
-                    st.success("Translation:")
-                    st.write(roman_urdu_translation)
+                    if urdu_translation:
+                        # Convert to Roman Urdu
+                        roman_urdu_translation = romanize_urdu(urdu_translation)
+                        st.success("Translation:")
+                        st.write(roman_urdu_translation)
+                    else:
+                        st.error("Translation failed. Please try again.")
                 except Exception as e:
                     st.error(f"Error: {str(e)}")
         else:
