@@ -21,21 +21,39 @@ def preprocess_input(text):
     return " ".join(processed_words)
 
 def romanize_urdu(text):
-    # Improved dictionary for Urdu to Roman Urdu transliteration
+    # Improved dictionary for Urdu to Roman Urdu transliteration, using word and character mapping
     transliteration_map = {
+        'ضرورت': 'zaroorat',
+        'ایجاد': 'ijaad',
+        'ماں': 'maa',
+        'ہے': 'hai',
+        'کی': 'ki',
+        'پیدائش': 'paidaish',
+        # Add more mappings for specific words and phrases
+    }
+
+    # Improved character-level mapping for words not found in transliteration_map
+    char_map = {
         'ک': 'k', 'ہ': 'h', 'ر': 'r', 'ا': 'a', 'ل': 'l', 'م': 'm', 'ت': 't',
         'ی': 'i', 'ن': 'n', 'د': 'd', 'س': 's', 'و': 'w', 'چ': 'ch', 'پ': 'p',
         'ش': 'sh', 'ب': 'b', 'گ': 'g', 'ف': 'f', 'ج': 'j', 'ز': 'z', 'خ': 'kh',
         'غ': 'gh', 'ع': 'a', 'ص': 's', 'ض': 'z', 'ط': 't', 'ظ': 'z', 'ق': 'q',
         'ح': 'h', 'ث': 's', 'ذ': 'z', 'ژ': 'zh', 'ٹ': 't', 'ڈ': 'd', 'ڑ': 'r',
-        'ے': 'e', 'ں': 'n', 'ہو': 'ho', 'ہی': 'hai', 'کیا': 'kya', 'ہیں': 'hain',
-        'ضرورت': 'zaroorat', 'ایجاد': 'ijaad', 'ماں': 'maa', 'ہے': 'hai', 'کی': 'ki',
-        # Add more mappings for common Urdu words/phrases for accuracy
+        'ے': 'e', 'ں': 'n'
     }
 
-    # Replace complete words first, then character by character
     words = text.split()
-    romanized_words = [transliteration_map.get(word, ''.join([transliteration_map.get(char, char) for char in word])) for word in words]
+    romanized_words = []
+
+    for word in words:
+        # Check if word is in transliteration map
+        if word in transliteration_map:
+            romanized_words.append(transliteration_map[word])
+        else:
+            # Fall back to character level transliteration
+            romanized_word = ''.join([char_map.get(char, char) for char in word])
+            romanized_words.append(romanized_word)
+
     return " ".join(romanized_words)
 
 def main():
