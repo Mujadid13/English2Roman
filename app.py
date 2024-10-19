@@ -1,13 +1,25 @@
 import streamlit as st
-from transformers import pipeline, MarianMTModel, MarianTokenizer
+from transformers import pipeline, MBartForConditionalGeneration, MBart50TokenizerFast
 
-# Load the translation pipeline (using MarianMT for fine-tuned translation)
+# Load the translation pipeline (using mBART for multilingual translation)
 @st.cache_resource
 def load_model():
-    model_name = 'Helsinki-NLP/opus-mt-en-ur'  # Base model for English to Urdu
-    tokenizer = MarianTokenizer.from_pretrained(model_name)
-    model = MarianMTModel.from_pretrained(model_name)
+    model_name = 'facebook/mbart-large-50-many-to-many-mmt'  # Better suited for multilingual translations
+    tokenizer = MBart50TokenizerFast.from_pretrained(model_name)
+    model = MBartForConditionalGeneration.from_pretrained(model_name)
+    tokenizer.src_lang = "en_XX"  # Set the source language as English
     return pipeline('translation', model=model, tokenizer=tokenizer)
+
+def preprocess_input(text):
+    # Simple preprocessing to replace informal abbreviations
+    replacements = {
+        "u": "you",
+        "r": "are",
+        # Add more if necessary
+    }
+    words = text.split()
+    processed_words = [replacements.get(word, word) for word in words]
+    return " ".join(processed_words)
 
 def main():
     st.title("English to Urdu Translator")
@@ -24,7 +36,9 @@ def main():
         if english_text:
             with st.spinner('Translating...'):
                 try:
-                    urdu_translation = translator(english_text)[0]['translation_text']
+                    # Preprocess the input text
+                    processed_text = preprocess_input(english_text)
+                    urdu_translation = translator(processed_text, forced_bos_token_id=translator.tokenizer.lang_code_to_id["ur_PK"])[0]['translation_text']
                     st.success("Translation:")
                     st.write(urdu_translation)
                 except Exception as e:
