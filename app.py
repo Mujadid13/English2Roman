@@ -1,5 +1,6 @@
 import streamlit as st
 from transformers import pipeline, MarianMTModel, MarianTokenizer
+from googletrans import Translator  # Library to help with Roman transliteration
 
 # Load the translation pipeline (using MarianMT for fine-tuned translation)
 @st.cache_resource
@@ -10,17 +11,9 @@ def load_model():
     return pipeline('translation', model=model, tokenizer=tokenizer)
 
 def romanize_urdu(text):
-    # A basic dictionary for Urdu to Roman Urdu transliteration
-    transliteration_map = {
-        'ک': 'k', 'ہ': 'h', 'ر': 'r', 'ا': 'a', 'ل': 'l', 'م': 'm', 'ت': 't',
-        'ی': 'i', 'ن': 'n', 'د': 'd', 'س': 's', 'و': 'w', 'چ': 'ch', 'پ': 'p',
-        'ش': 'sh', 'ب': 'b', 'گ': 'g', 'ف': 'f', 'ج': 'j', 'ز': 'z', 'خ': 'kh',
-        'غ': 'gh', 'ع': 'a', 'ص': 's', 'ض': 'z', 'ط': 't', 'ظ': 'z'
-        # Add more mappings for more accuracy
-    }
-    
-    # Replace each character with its Roman Urdu equivalent
-    romanized_text = ''.join([transliteration_map.get(char, char) for char in text])
+    # Use Google Translator to transliterate Urdu script to Roman Urdu
+    translator = Translator()
+    romanized_text = translator.translate(text, src='ur', dest='ur').pronunciation
     return romanized_text
 
 def main():
