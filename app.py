@@ -29,6 +29,9 @@ def romanize_urdu(text):
         'ہے': 'hai',
         'کی': 'ki',
         'پیدائش': 'paidaish',
+        'تم': 'tum',  # Correct mapping for "تم"
+        'کیسا': 'kaisa',  # Correct mapping for "کیسا"
+        'ہو': 'ho',  # Correct mapping for "ہو"
         # Add more mappings for specific words and phrases
     }
 
