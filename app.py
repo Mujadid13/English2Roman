@@ -1,43 +1,42 @@
 import streamlit as st
-from transformers import pipeline
+from transformers import pipeline, MarianMTModel, MarianTokenizer
+
+# Load the translation pipeline (using MarianMT for fine-tuned translation)
+@st.cache_resource
+def load_model():
+    model_name = 'Helsinki-NLP/opus-mt-en-ur'  # Base model for English to Urdu
+    tokenizer = MarianTokenizer.from_pretrained(model_name)
+    model = MarianMTModel.from_pretrained(model_name)
+    return pipeline('translation', model=model, tokenizer=tokenizer)
+
+def romanize_urdu(text):
+    # Placeholder function to convert standard Urdu script to Roman Urdu
+    # In practice, you would use a more sophisticated approach or library
+    return text.replace('ک', 'k').replace('ہ', 'h').replace('ر', 'r')  # Simplified example
 
 def main():
-    st.title("English to Roman Urdu Converter")
-    st.write("Enter an English prompt, and get the Roman Urdu equivalent!")
+    st.title("English to Roman Urdu Translator")
+    st.write("Enter an English sentence and get its translation in Roman Urdu!")
 
-    # Load the Hugging Face model
-    if "translator" not in st.session_state:
-        try:
-            st.session_state.translator = pipeline("translation", model="Helsinki-NLP/opus-mt-en-ur")
-        except Exception as e:
-            st.error(f"Failed to load model: {e}")
-            return
+    # Load the model
+    translator = load_model()
 
-    translator = st.session_state.translator
+    # Input prompt
+    english_text = st.text_area("Enter English text:", height=150)
 
-    # User input prompt
-    input_text = st.text_input("Enter English text:")
-
-    if st.button("Convert"):
-        if input_text:
-            try:
-                # Generate Roman Urdu output
-                output = translator(input_text)
-                urdu_text = output[0]['translation_text']
-
-                # Simple conversion from Urdu script to Roman Urdu (manual mapping)
-                urdu_to_roman = {
-                    "ہیلو": "hello",
-                    "کیا حال ہے": "kia haal hai",
-                    # Add more mappings as needed
-                }
-                roman_urdu = urdu_to_roman.get(urdu_text, urdu_text)
-
-                st.success(f"Roman Urdu: {roman_urdu}")
-            except Exception as e:
-                st.error(f"Error during conversion: {e}")
+    # Translate and display output
+    if st.button("Translate"):
+        if english_text:
+            with st.spinner('Translating...'):
+                try:
+                    urdu_translation = translator(english_text, target_language='ur')[0]['translation_text']
+                    roman_urdu_translation = romanize_urdu(urdu_translation)
+                    st.success("Translation:")
+                    st.write(roman_urdu_translation)
+                except Exception as e:
+                    st.error(f"Error: {str(e)}")
         else:
-            st.warning("Please enter some text.")
+            st.warning("Please enter some English text to translate.")
 
 if __name__ == "__main__":
     main()
