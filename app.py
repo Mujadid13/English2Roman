@@ -10,9 +10,18 @@ def load_model():
     return pipeline('translation', model=model, tokenizer=tokenizer)
 
 def romanize_urdu(text):
-    # Placeholder function to convert standard Urdu script to Roman Urdu
-    # In practice, you would use a more sophisticated approach or library
-    return text.replace('ک', 'k').replace('ہ', 'h').replace('ر', 'r')  # Simplified example
+    # A basic dictionary for Urdu to Roman Urdu transliteration
+    transliteration_map = {
+        'ک': 'k', 'ہ': 'h', 'ر': 'r', 'ا': 'a', 'ل': 'l', 'م': 'm', 'ت': 't',
+        'ی': 'i', 'ن': 'n', 'د': 'd', 'س': 's', 'و': 'w', 'چ': 'ch', 'پ': 'p',
+        'ش': 'sh', 'ب': 'b', 'گ': 'g', 'ف': 'f', 'ج': 'j', 'ز': 'z', 'خ': 'kh',
+        'غ': 'gh', 'ع': 'a', 'ص': 's', 'ض': 'z', 'ط': 't', 'ظ': 'z'
+        # Add more mappings for more accuracy
+    }
+    
+    # Replace each character with its Roman Urdu equivalent
+    romanized_text = ''.join([transliteration_map.get(char, char) for char in text])
+    return romanized_text
 
 def main():
     st.title("English to Roman Urdu Translator")
