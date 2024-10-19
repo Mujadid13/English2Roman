@@ -2,4 +2,5 @@ streamlit
 transformers
 torch
 sentencepiece
-git+https://github.com/inexactscience/urdu2roman.git
+urduhack
+tensorflow
