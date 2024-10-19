@@ -13,8 +13,11 @@ def load_model():
 def romanize_urdu(text):
     # Use Google Translator to transliterate Urdu script to Roman Urdu
     translator = Translator()
-    romanized_text = translator.translate(text, src='ur', dest='ur').pronunciation
-    return romanized_text
+    try:
+        result = translator.translate(text, src='ur', dest='en')
+        return result.text if result else text
+    except Exception as e:
+        return f"Transliteration failed: {str(e)}"
 
 def main():
     st.title("English to Roman Urdu Translator")
