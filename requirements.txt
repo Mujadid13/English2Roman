@@ -4,3 +4,4 @@ torch
 sentencepiece
 urduhack
 tensorflow
+git+https://github.com/inexactscience/urdu2roman.git
