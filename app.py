@@ -23,7 +23,17 @@ def main():
             try:
                 # Generate Roman Urdu output
                 output = translator(input_text)
-                st.success(f"Roman Urdu: {output[0]['translation_text']}")
+                urdu_text = output[0]['translation_text']
+
+                # Simple conversion from Urdu script to Roman Urdu (manual mapping)
+                urdu_to_roman = {
+                    "ہیلو": "hello",
+                    "کیا حال ہے": "kia haal hai",
+                    # Add more mappings as needed
+                }
+                roman_urdu = urdu_to_roman.get(urdu_text, urdu_text)
+
+                st.success(f"Roman Urdu: {roman_urdu}")
             except Exception as e:
                 st.error(f"Error during conversion: {e}")
         else:
