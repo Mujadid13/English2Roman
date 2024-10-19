@@ -36,6 +36,10 @@ def romanize_urdu(text):
         'جہنم': 'jahanum',
         'میں': 'mein',
         'جاؤ': 'jao',
+        'یہاں': 'yahan',
+        'کیا': 'kiya',
+        'کر': 'kr',
+        'رہے': 'rahe',
         # Add more mappings for specific words and phrases
     }
 
