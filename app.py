@@ -32,6 +32,14 @@ def romanize_urdu(text):
         'تم': 'tum',  # Correct mapping for "تم"
         'کیسا': 'kaisa',  # Correct mapping for "کیسا"
         'ہو': 'ho',  # Correct mapping for "ہو"
+        'کہاں': 'kahan',
+        'جہنم': 'jahanum',
+        'میں': 'mein',
+        'جاؤ': 'jao',
+        # Specific phrases to ensure correct translations
+        'تم کہاں ہو': 'tum kahan ho',  # Where are you?
+        'جہنم میں جاؤ': 'jahanum mein jao',  # Go to hell
+        'ضرورت ایجاد کی ماں ہے': 'zaroorat ijaad ki maa hai',
         # Add more mappings for specific words and phrases
     }
 
