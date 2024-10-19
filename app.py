@@ -13,8 +13,15 @@ def preprocess_input(text):
 
 def translate_text_google(text, src_lang='en', tgt_lang='ur'):
     translator = Translator()
-    translated = translator.translate(text, src=src_lang, dest=tgt_lang)
-    return translated.text
+    try:
+        translated = translator.translate(text, src=src_lang, dest=tgt_lang)
+        if translated and translated.text:
+            return translated.text
+        else:
+            return f"Translation failed. Original text: {text}"
+    except Exception as e:
+        st.error(f"Translation error: {str(e)}")
+        return f"Translation failed. Original text: {text}"
 
 def romanize_urdu(text):
     transliteration_map = {
@@ -55,10 +62,17 @@ def main():
             with st.spinner('Translating...'):
                 try:
                     processed_text = preprocess_input(english_text)
+                    st.info(f"Preprocessed text: {processed_text}")
+                    
                     urdu_translation = translate_text_google(processed_text)
-                    roman_urdu_translation = romanize_urdu(urdu_translation)
-                    st.success("Translation:")
-                    st.write(roman_urdu_translation)
+                    st.info(f"Urdu translation: {urdu_translation}")
+                    
+                    if urdu_translation.startswith("Translation failed"):
+                        st.error(urdu_translation)
+                    else:
+                        roman_urdu_translation = romanize_urdu(urdu_translation)
+                        st.success("Translation:")
+                        st.write(roman_urdu_translation)
                 except Exception as e:
                     st.error(f"Error: {str(e)}")
         else:
