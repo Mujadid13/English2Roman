@@ -29,11 +29,11 @@ def romanize_urdu(text):
         'غ': 'gh', 'ع': 'a', 'ص': 's', 'ض': 'z', 'ط': 't', 'ظ': 'z', 'ق': 'q',
         'ح': 'h', 'ث': 's', 'ذ': 'z', 'ژ': 'zh', 'ٹ': 't', 'ڈ': 'd', 'ڑ': 'r',
         'ے': 'e', 'ں': 'n', 'ہو': 'ho', 'ہی': 'hai', 'کیا': 'kya', 'ہیں': 'hain',
-        'ضرورت': 'zaroorat', 'پیدائش': 'paidaish', 'ماں': 'maan', 'ہے': 'hai',
+        'ضرورت': 'zaroorat', 'ایجاد': 'ijaad', 'ماں': 'maa', 'ہے': 'hai', 'کی': 'ki',
         # Add more mappings for common Urdu words/phrases for accuracy
     }
 
-    # Split the text into words and replace with the mapping
+    # Replace complete words first, then character by character
     words = text.split()
     romanized_words = [transliteration_map.get(word, ''.join([transliteration_map.get(char, char) for char in word])) for word in words]
     return " ".join(romanized_words)
