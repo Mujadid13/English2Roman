@@ -2,7 +2,7 @@ import streamlit as st
 from transformers import pipeline
 
 # Load the English to Roman Urdu translation model
-translator = pipeline("translation", model="your-model-name-here")
+translator = pipeline("translation", model="google-t5/t5-base")
 
 def translate_to_roman_urdu(text):
     result = translator(text, max_length=128)[0]['translation_text']
