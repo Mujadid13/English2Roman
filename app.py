@@ -40,6 +40,7 @@ def romanize_urdu(text):
         'کیا': 'kiya',
         'کر': 'kr',
         'رہے': 'rahe',
+        'ہیلو': 'assalam-o-alaikum'
         # Add more mappings for specific words and phrases
     }
 
