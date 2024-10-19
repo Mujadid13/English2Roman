@@ -1,6 +1,8 @@
 import streamlit as st
 from transformers import MBartForConditionalGeneration, MBart50TokenizerFast
 import torch
+import googletrans
+from googletrans import Translator
 
 # Load the translation pipeline (using mBART for multilingual translation)
 @st.cache_resource
@@ -22,6 +24,11 @@ def preprocess_input(text):
     words = text.split()
     processed_words = [replacements.get(word.lower(), word) for word in words]
     return " ".join(processed_words)
+
+def translate_text_google(text, src_lang='en', tgt_lang='ur'):
+    translator = Translator()
+    translated = translator.translate(text, src=src_lang, dest=tgt_lang)
+    return translated.text
 
 def romanize_urdu(text):
     # Improved dictionary for Urdu to Roman Urdu transliteration, using word and character mapping
@@ -64,34 +71,9 @@ def romanize_urdu(text):
 
     return " ".join(romanized_words)
 
-def translate_text(model, tokenizer, text, src_lang="en_XX", tgt_lang="ur_PK"):
-    tokenizer.src_lang = src_lang  # Source language
-    inputs = tokenizer(text, return_tensors="pt")
-
-    # Generate translation with attention to GPU availability
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    model = model.to(device)
-    inputs = {key: value.to(device) for key, value in inputs.items()}
-
-    # Generate translation
-    generated_tokens = model.generate(
-        **inputs,
-        forced_bos_token_id=tokenizer.lang_code_to_id[tgt_lang],
-        max_length=100,  # Limit the length of the translation
-        num_beams=4,  # Use beam search for better translations
-        early_stopping=True
-    )
-
-    # Decode the generated tokens
-    translation = tokenizer.decode(generated_tokens[0], skip_special_tokens=True)
-    return translation
-
 def main():
     st.title("English to Roman Urdu Translator")
     st.write("Enter an English sentence and get its translation in Roman Urdu!")
-
-    # Load the model and tokenizer
-    model, tokenizer = load_model()
 
     # Input prompt
     english_text = st.text_area("Enter English text:", height=150)
@@ -104,8 +86,8 @@ def main():
                     # Preprocess the input text
                     processed_text = preprocess_input(english_text)
 
-                    # Generate translation
-                    urdu_translation = translate_text(model, tokenizer, processed_text)
+                    # Generate translation using Google Translate
+                    urdu_translation = translate_text_google(processed_text)
 
                     # Convert to Roman Urdu
                     roman_urdu_translation = romanize_urdu(urdu_translation)
