@@ -35,6 +35,8 @@ def romanize_urdu(text):
         'تم': 'tum',
         'کیسے': 'kaise',
         'ہو': 'ho',
+        'کیا': 'kya',
+        'حال': 'haal',
         # Add more mappings for specific words and phrases
     }
 
