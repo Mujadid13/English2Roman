@@ -1,6 +1,5 @@
 import streamlit as st
 from transformers import pipeline, MBartForConditionalGeneration, MBart50TokenizerFast
-from googletrans import Translator  # Library to help with Roman transliteration
 
 # Load the translation pipeline (using mBART for multilingual translation)
 @st.cache_resource
@@ -22,13 +21,20 @@ def preprocess_input(text):
     return " ".join(processed_words)
 
 def romanize_urdu(text):
-    # Use Google Translator to transliterate Urdu script to Roman Urdu
-    translator = Translator()
-    try:
-        result = translator.translate(text, src='ur', dest='en')
-        return result.pronunciation if result.pronunciation else text
-    except Exception as e:
-        return f"Transliteration failed: {str(e)}"
+    # A basic dictionary for Urdu to Roman Urdu transliteration
+    transliteration_map = {
+        'ک': 'k', 'ہ': 'h', 'ر': 'r', 'ا': 'a', 'ل': 'l', 'م': 'm', 'ت': 't',
+        'ی': 'i', 'ن': 'n', 'د': 'd', 'س': 's', 'و': 'w', 'چ': 'ch', 'پ': 'p',
+        'ش': 'sh', 'ب': 'b', 'گ': 'g', 'ف': 'f', 'ج': 'j', 'ز': 'z', 'خ': 'kh',
+        'غ': 'gh', 'ع': 'a', 'ص': 's', 'ض': 'z', 'ط': 't', 'ظ': 'z', 'ق': 'q',
+        'ح': 'h', 'ث': 's', 'ذ': 'z', 'ژ': 'zh', 'ٹ': 't', 'ڈ': 'd', 'ڑ': 'r',
+        'ے': 'e', 'ں': 'n'
+        # Add more mappings for more accuracy
+    }
+
+    # Replace each character with its Roman Urdu equivalent
+    romanized_text = ''.join([transliteration_map.get(char, char) for char in text])
+    return romanized_text
 
 def main():
     st.title("English to Roman Urdu Translator")
